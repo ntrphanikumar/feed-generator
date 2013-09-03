@@ -22,23 +22,36 @@
 			<bean class="java.util.Date" />
 		</constructor-arg>
 	</bean>
+	
+	<bean class="com.imaginea.feedgenerator.util.FeedUtils" id="feedUtils">
+		<constructor-arg value="${feed.import.home}"/>
+		<constructor-arg value="${feed.project}"/>
+		<constructor-arg value="${feed.page.size}"/>
+	</bean>
+	
+	<bean class="com.imaginea.feedgenerator.process.AbstractFeedProcessor" id="abstractFeedProcessor" abstract="true">
+		<constructor-arg ref="feedUtils"/>
+	</bean>
+	
+	<bean class="org.json.simple.parser.JSONParser" id="jsonParser"/>
+	
+	<bean class="java.text.DecimalFormat" id="decimalFormat">
+		<constructor-arg value="#0.00"/>
+	</bean>
 
 	<bean class="com.imaginea.feedgenerator.FeedGenerator" id="dataFeedGenerator">
 		<constructor-arg ref="feedStatus" />
 		<constructor-arg>
 			<util:list>
-				<bean class="com.imaginea.feedgenerator.process.PreviousFeedGenerationDataProcessor"/>
-				<bean class="com.imaginea.feedgenerator.process.UpdateSKUsProcessor">
-					<constructor-arg value="${feed.page.size}"/>
+				<bean class="com.imaginea.feedgenerator.process.PreviousFeedGenerationDataProcessor" parent="abstractFeedProcessor"/>
+				<bean class="com.imaginea.feedgenerator.process.UpdateSKUsProcessor" parent="abstractFeedProcessor"/>
+				<bean class="com.imaginea.feedgenerator.process.DownloadSKUDataFilesProcessor" parent="abstractFeedProcessor"/>
+				<bean class="com.imaginea.feedgenerator.process.DeleteInactiveSKUsProcessor" parent="abstractFeedProcessor"/>
+				<bean class="com.imaginea.feedgenerator.process.WriteProductsDataProcessor" parent="abstractFeedProcessor">
+					<constructor-arg ref="jsonParser"/>
+					<constructor-arg ref="decimalFormat"/>
 				</bean>
-				<bean class="com.imaginea.feedgenerator.process.DownloadSKUDataFilesProcessor">
-					<constructor-arg value="${feed.page.size}"/>
-				</bean>
-				<bean class="com.imaginea.feedgenerator.process.DeleteInactiveSKUsProcessor">
-					<constructor-arg value="${feed.page.size}"/>
-				</bean>
-				<bean class="com.imaginea.feedgenerator.process.WriteProductsDataProcessor"/>
-				<bean class="com.imaginea.feedgenerator.process.UpdateCurrentFeedGenerationDataProcessor"/>
+				<bean class="com.imaginea.feedgenerator.process.UpdateCurrentFeedGenerationDataProcessor" parent="abstractFeedProcessor"/>
 			</util:list>
 		</constructor-arg>
 	</bean>

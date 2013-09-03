@@ -2,7 +2,6 @@ package com.imaginea.feedgenerator.process;
 
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.API_KEY;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DATETIME_FORMAT;
-import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DOWNLOAD_DIR;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.ITEM_TYPES;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.JSON_FORMAT;
 import static com.imaginea.feedgenerator.util.Utils.convertDateToStringFormat;
@@ -19,17 +18,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import com.imaginea.feedgenerator.FeedStatus;
+import com.imaginea.feedgenerator.util.FeedUtils;
 import com.imaginea.feedgenerator.util.Utils;
 
-public class DeleteInactiveSKUsProcessor implements Processor {
+public class DeleteInactiveSKUsProcessor extends AbstractFeedProcessor {
     private static final Logger log = Logger.getLogger(DownloadSKUDataFilesProcessor.class);
     private final String ATTRIBUTES = "show=sku";
-    private String dataFeedGeneratorHomeDir;
 
-    private final int pageSize;
-
-    public DeleteInactiveSKUsProcessor(int pageSize) {
-        this.pageSize = pageSize;
+    public DeleteInactiveSKUsProcessor(FeedUtils feedUtils) {
+        super(feedUtils);
     }
 
     public JSONObject getJSONResponse(String url) throws ParseException {
@@ -37,7 +34,6 @@ public class DeleteInactiveSKUsProcessor implements Processor {
     }
 
     public void process(FeedStatus feedStatus) throws Exception {
-        dataFeedGeneratorHomeDir = feedStatus.getFeedGeneratorHome();
         Date lastRunTimeForDataFeed = feedStatus.getLastRunTime();
         log.debug(String.format("Deleting the skus that have become inactive since last update time of %s ",
                 lastRunTimeForDataFeed));
@@ -45,8 +41,8 @@ public class DeleteInactiveSKUsProcessor implements Processor {
         int currentPageNum = 1;
         String lastUpdateDate = convertDateToStringFormat(lastRunTimeForDataFeed, DATETIME_FORMAT);
         String itemDeltaURL = "http://api.remix.bestbuy.com/v1/products(itemUpdateDate>" + lastUpdateDate
-                + "&type%20in(" + ITEM_TYPES + ")&active=false)?" + JSON_FORMAT + "&pageSize=" + pageSize + '&'
-                + ATTRIBUTES + '&' + API_KEY + "&page=";
+                + "&type%20in(" + ITEM_TYPES + ")&active=false)?" + JSON_FORMAT + "&pageSize="
+                + getFeedUtils().getPageSize() + '&' + ATTRIBUTES + '&' + API_KEY + "&page=";
         JSONObject jsonObject = getJSONResponse(itemDeltaURL + currentPageNum);
         Long totalProducts = (Long) jsonObject.get("total");
         if (totalProducts == 0) {
@@ -55,7 +51,7 @@ public class DeleteInactiveSKUsProcessor implements Processor {
             Long totalPages = (Long) jsonObject.get("totalPages");
             log.info(String
                     .format("Deleting %s total products that have been updated since %s.  Processing %s total pages with a page size of %s",
-                            totalProducts, lastUpdateDate, totalPages, pageSize));
+                            totalProducts, lastUpdateDate, totalPages, getFeedUtils().getPageSize()));
 
             for (int i = 0; i < totalPages; i++) {
                 if (i != 0) {
@@ -65,8 +61,7 @@ public class DeleteInactiveSKUsProcessor implements Processor {
                 while (productsIterator.hasNext()) {
                     JSONObject product = productsIterator.next();
                     Long sku = (Long) product.get("sku");
-                    File fileToBeRemoved = new File(dataFeedGeneratorHomeDir + DOWNLOAD_DIR + File.separator + sku
-                            + ".js");
+                    File fileToBeRemoved = new File(getFeedUtils().getDownloadDir() + File.separator + sku + ".js");
                     log.debug("File to be removed : " + fileToBeRemoved.getName());
                     log.debug("File to be removed exits : " + fileToBeRemoved.exists());
                     if (fileToBeRemoved.exists()) {

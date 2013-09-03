@@ -1,7 +1,6 @@
 package com.imaginea.feedgenerator.process;
 
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DATETIME_FORMAT;
-import static com.imaginea.feedgenerator.FeedGeneratorConstansts.LAST_BBYOPEN_UPDATES_FILE;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,11 +17,15 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.imaginea.feedgenerator.FeedGenerator;
 import com.imaginea.feedgenerator.FeedStatus;
+import com.imaginea.feedgenerator.util.FeedUtils;
 
-public class UpdateCurrentFeedGenerationDataProcessor implements Processor {
+public class UpdateCurrentFeedGenerationDataProcessor extends AbstractFeedProcessor {
 
     private static final Logger log = Logger.getLogger(FeedGenerator.class);
-    private static final String BBYOPEN_LAST_RUN_TIMESTAMP_FILE = "/staging/bestbuy/config/date_time_of_last_bbyopen_datafeed_run.txt";
+
+    public UpdateCurrentFeedGenerationDataProcessor(FeedUtils feedUtils) {
+        super(feedUtils);
+    }
 
     public void process(FeedStatus feedStatus) throws Exception {
         updateLastRunDate(feedStatus);
@@ -30,7 +33,7 @@ public class UpdateCurrentFeedGenerationDataProcessor implements Processor {
     }
 
     private void updateSKUUpdateTimes(FeedStatus feedStatus) throws IOException, ParseException {
-        File lastSKUUpdatedTimeStamps = new File(feedStatus.getFeedGeneratorHome() + LAST_BBYOPEN_UPDATES_FILE);
+        File lastSKUUpdatedTimeStamps = new File(getFeedUtils().getLastUpdateSKUInfoFile());
         if (!lastSKUUpdatedTimeStamps.exists()) {
             lastSKUUpdatedTimeStamps.createNewFile();
         }
@@ -49,8 +52,7 @@ public class UpdateCurrentFeedGenerationDataProcessor implements Processor {
 
     private void updateLastRunDate(FeedStatus feedStatus) throws IOException {
         log.debug("Recording a last up date time of " + feedStatus.getStartTime());
-        File dataFeedLastRunTimeStampFile = new File(feedStatus.getFeedGeneratorHome()
-                + BBYOPEN_LAST_RUN_TIMESTAMP_FILE);
+        File dataFeedLastRunTimeStampFile = new File(getFeedUtils().getLastDataFeedRunInfoFile());
         FileWriter fw = new FileWriter(dataFeedLastRunTimeStampFile);
         try {
             fw.write(new SimpleDateFormat(DATETIME_FORMAT).format(feedStatus.getStartTime()));

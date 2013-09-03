@@ -1,7 +1,6 @@
 package com.imaginea.feedgenerator.process;
 
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.API_KEY;
-import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DOWNLOAD_DIR;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.ITEM_TYPES;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.JSON_FORMAT;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.PRODUCT_ATTR_FILTERS;
@@ -20,23 +19,20 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import com.imaginea.feedgenerator.FeedStatus;
+import com.imaginea.feedgenerator.util.FeedUtils;
 import com.imaginea.feedgenerator.util.Utils;
 
-public class DownloadSKUDataFilesProcessor implements Processor {
-
+public class DownloadSKUDataFilesProcessor extends AbstractFeedProcessor {
     private static final Logger log = Logger.getLogger(DownloadSKUDataFilesProcessor.class);
-    private String dataFeedGeneratorHomeDir;
-    private final int pageSize;
 
-    public DownloadSKUDataFilesProcessor(int pageSize) {
-        this.pageSize = pageSize;
+    public DownloadSKUDataFilesProcessor(FeedUtils feedUtils) {
+        super(feedUtils);
     }
 
     @Override
     public void process(FeedStatus feedStatus) throws Exception {
-        dataFeedGeneratorHomeDir = feedStatus.getFeedGeneratorHome();
         log.info("Retrieving updated SKUs from BBYOpen and writing to files");
-        File downLoadDir = new File(dataFeedGeneratorHomeDir + DOWNLOAD_DIR);
+        File downLoadDir = new File(getFeedUtils().getDownloadDir());
         if (!downLoadDir.exists() || !downLoadDir.isDirectory()) {
             downLoadDir.mkdirs();
         }
@@ -57,8 +53,8 @@ public class DownloadSKUDataFilesProcessor implements Processor {
     private void getProductsInBatch(List<Long> skuList) throws ParseException, IOException {
         String url = "http://api.remix.bestbuy.com/v1/products(sku%20in("
                 + skuList.toString().substring(1, skuList.toString().length() - 1).replace(", ", ",") + ")&type%20in("
-                + ITEM_TYPES + ")&" + PRODUCT_ATTR_FILTERS + ")?show=all&" + JSON_FORMAT + "&pageSize=" + pageSize
-                + '&' + API_KEY;
+                + ITEM_TYPES + ")&" + PRODUCT_ATTR_FILTERS + ")?show=all&" + JSON_FORMAT + "&pageSize="
+                + getFeedUtils().getPageSize() + '&' + API_KEY;
         JSONObject bbyOpenResp = getJSONResponse(url);
         Iterator<JSONObject> productsIterator = ((JSONArray) bbyOpenResp.get("products")).iterator();
         while (productsIterator.hasNext()) {
@@ -73,7 +69,7 @@ public class DownloadSKUDataFilesProcessor implements Processor {
     }
 
     private void writeProductToFile(JSONObject product) throws IOException {
-        File jsonFile = new File(dataFeedGeneratorHomeDir + DOWNLOAD_DIR + File.separator + product.get("sku") + ".js");
+        File jsonFile = new File(getFeedUtils().getDownloadDir() + File.separator + product.get("sku") + ".js");
         BufferedWriter bw = new BufferedWriter(new FileWriter(jsonFile));
         try {
             bw.write(product.toJSONString().replaceAll("\\\\/", "/"));

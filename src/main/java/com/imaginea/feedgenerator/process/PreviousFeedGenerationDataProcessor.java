@@ -1,7 +1,6 @@
 package com.imaginea.feedgenerator.process;
 
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DATETIME_FORMAT;
-import static com.imaginea.feedgenerator.FeedGeneratorConstansts.LAST_BBYOPEN_UPDATES_FILE;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.OVER_LAP_TIME_FOR_DATA_FEED;
 
 import java.io.BufferedReader;
@@ -17,19 +16,20 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.imaginea.feedgenerator.FeedStatus;
+import com.imaginea.feedgenerator.util.FeedUtils;
 
-public class PreviousFeedGenerationDataProcessor implements Processor {
+public class PreviousFeedGenerationDataProcessor extends AbstractFeedProcessor {
 
     private static final Logger log = Logger.getLogger(PreviousFeedGenerationDataProcessor.class);
-    private static final String BBYOPEN_LAST_RUN_TIMESTAMP_FILE = "/staging/bestbuy/config/date_time_of_last_bbyopen_datafeed_run.txt";
 
-    private String dataFeedGeneratorHomeDir;
+    public PreviousFeedGenerationDataProcessor(FeedUtils feedUtils) {
+        super(feedUtils);
+    }
 
     @Override
     public void process(FeedStatus feedStatus) throws Exception {
-        dataFeedGeneratorHomeDir = feedStatus.getFeedGeneratorHome();
         Map<Long, Date> skuLatestUpdatedTimeStamps = new HashMap<Long, Date>();
-        File dataFeedLastRunTimeStampFile = new File(dataFeedGeneratorHomeDir + BBYOPEN_LAST_RUN_TIMESTAMP_FILE);
+        File dataFeedLastRunTimeStampFile = new File(getFeedUtils().getLastDataFeedRunInfoFile());
         if (dataFeedLastRunTimeStampFile.exists()) {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(dataFeedLastRunTimeStampFile));
             try {
@@ -48,9 +48,9 @@ public class PreviousFeedGenerationDataProcessor implements Processor {
 
     private Map<Long, Date> getSKUsUpdatedTimeStampsFromLastRun() throws Exception {
         Map<Long, Date> skuLatestUpdatedTimeStamps = new HashMap<Long, Date>();
-        File lastSKUUpdatedTimeStamps = new File(dataFeedGeneratorHomeDir + LAST_BBYOPEN_UPDATES_FILE);
+        File lastSKUUpdatedTimeStamps = new File(getFeedUtils().getLastUpdateSKUInfoFile());
         if (!lastSKUUpdatedTimeStamps.exists()) {
-            log.warn("No " + dataFeedGeneratorHomeDir + LAST_BBYOPEN_UPDATES_FILE + " file found. ");
+            log.warn("No " + getFeedUtils().getLastUpdateSKUInfoFile() + " file found. ");
         } else {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(lastSKUUpdatedTimeStamps));
             try {

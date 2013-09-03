@@ -19,16 +19,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import com.imaginea.feedgenerator.FeedStatus;
+import com.imaginea.feedgenerator.util.FeedUtils;
 import com.imaginea.feedgenerator.util.Utils;
 
-public class UpdateSKUsProcessor implements Processor {
+public class UpdateSKUsProcessor extends AbstractFeedProcessor {
     private final String ATTRIBUTES = "show=sku,itemUpdateDate";
     private static final Logger log = Logger.getLogger(UpdateSKUsProcessor.class);
 
-    private final int pageSize;
-
-    public UpdateSKUsProcessor(int pageSize) {
-        this.pageSize = pageSize;
+    public UpdateSKUsProcessor(FeedUtils feedUtils) {
+        super(feedUtils);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class UpdateSKUsProcessor implements Processor {
         String priceUpdateDate = convertDateToStringFormat(lastRunTimeForDataFeed, DATETIME_FORMAT);
         String itemDeltaURL = "http://api.remix.bestbuy.com/v1/products(itemUpdateDate>" + priceUpdateDate
                 + "&type%20in(" + ITEM_TYPES + ")&" + PRODUCT_ATTR_FILTERS + ")?" + JSON_FORMAT + "&pageSize="
-                + pageSize + '&' + ATTRIBUTES + '&' + API_KEY + "&page=";
+                + getFeedUtils().getPageSize() + '&' + ATTRIBUTES + '&' + API_KEY + "&page=";
         JSONObject jsonObject = getJSONResponse(itemDeltaURL + currentPageNum);
 
         Long totalProducts = (Long) jsonObject.get("total");
@@ -51,7 +50,7 @@ public class UpdateSKUsProcessor implements Processor {
             Long totalPages = (Long) jsonObject.get("totalPages");
             log.info(String
                     .format("Checking %s total products that have been updated since %s.  Processing %s total pages with a page size of %s",
-                            totalProducts, priceUpdateDate, totalPages, pageSize));
+                            totalProducts, priceUpdateDate, totalPages, getFeedUtils().getPageSize()));
 
             for (int i = 0; i < totalPages; i++) {
                 if (i != 0) {
