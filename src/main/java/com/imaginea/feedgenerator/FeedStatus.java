@@ -11,14 +11,14 @@ public class FeedStatus {
     private final String feedGeneratorHome;
     private final Date startTime;
 
-    private Date lastRunTimeForDataFeed;
+    private Date lastRunTime;
     private Map<Long, Date> skuLatestUpdatedTimeStamps;
     private List<Long> skusToUpdate;
 
     public FeedStatus(String feedGeneratorHome, Date startTime) {
         this.feedGeneratorHome = feedGeneratorHome;
         this.startTime = startTime;
-        lastRunTimeForDataFeed = new Date(0);
+        lastRunTime = new Date(0);
     }
 
     public String getFeedGeneratorHome() {
@@ -36,18 +36,18 @@ public class FeedStatus {
         this.skusToUpdate = skusToUpdate;
     }
 
-    public Date getLastRunTimeForDataFeed() {
-        return lastRunTimeForDataFeed;
+    public Date getLastRunTime() {
+        return lastRunTime;
     }
 
-    public void setLastRunTimeForDataFeed(Date lastRunTimeForDataFeed) {
-        this.lastRunTimeForDataFeed = lastRunTimeForDataFeed;
+    public void setLastRunTime(Date lastRunTime) {
+        this.lastRunTime = lastRunTime;
     }
 
     public Date getLatestUpdatedTime(Long sku) {
         Date latestUpdatedTime = getSkuLatestUpdatedTimeStamps().get(sku);
         if (latestUpdatedTime == null) {
-            latestUpdatedTime = lastRunTimeForDataFeed;
+            latestUpdatedTime = lastRunTime;
         }
         return latestUpdatedTime;
     }

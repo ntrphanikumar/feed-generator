@@ -39,7 +39,7 @@ public class PreviousFeedGenerationDataProcessor implements Processor {
                 log.info("Over Lapping Data Feed to hours : " + lastRunTimeOfDataFeed);
                 skuLatestUpdatedTimeStamps = getSKUsUpdatedTimeStampsFromLastRun();
                 feedStatus.setSkuLatestUpdatedTimeStamps(skuLatestUpdatedTimeStamps);
-                feedStatus.setLastRunTimeForDataFeed(lastRunTimeOfDataFeed);
+                feedStatus.setLastRunTime(lastRunTimeOfDataFeed);
             } finally {
                 IOUtils.closeQuietly(bufferedReader);
             }

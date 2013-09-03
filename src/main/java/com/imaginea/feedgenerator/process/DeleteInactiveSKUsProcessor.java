@@ -35,7 +35,7 @@ public class DeleteInactiveSKUsProcessor implements Processor {
 	@Override
 	public void process(FeedStatus feedStatus) throws Exception {
 		dataFeedGeneratorHomeDir = feedStatus.getFeedGeneratorHome();
-		Date lastRunTimeForDataFeed = feedStatus.getLastRunTimeForDataFeed();
+		Date lastRunTimeForDataFeed = feedStatus.getLastRunTime();
 		log.debug(String.format("Deleting the skus that have become inactive since last update time of %s ", lastRunTimeForDataFeed));
 		List<Long> skusToDelete = new ArrayList<Long>();
 		int currentPageNum = 1;

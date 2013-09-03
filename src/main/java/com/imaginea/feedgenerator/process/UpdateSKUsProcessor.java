@@ -29,7 +29,7 @@ public class UpdateSKUsProcessor implements Processor {
     @Override
     public void process(FeedStatus feedStatus) throws Exception {
 
-        Date lastRunTimeForDataFeed = feedStatus.getLastRunTimeForDataFeed();
+        Date lastRunTimeForDataFeed = feedStatus.getLastRunTime();
         log.debug("Retrieving the skus that have been updated since: " + lastRunTimeForDataFeed);
         int currentPageNum = 1;
         List<Long> skusToUpdate = new ArrayList<Long>();
