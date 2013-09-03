@@ -4,7 +4,6 @@ import static com.imaginea.feedgenerator.FeedGeneratorConstansts.API_KEY;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DATETIME_FORMAT;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.ITEM_TYPES;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.JSON_FORMAT;
-import static com.imaginea.feedgenerator.FeedGeneratorConstansts.PAGE_SIZE;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.PRODUCT_ATTR_FILTERS;
 import static com.imaginea.feedgenerator.util.Utils.convertDateToStringFormat;
 import static com.imaginea.feedgenerator.util.Utils.convertStringToDateFormat;
@@ -26,6 +25,12 @@ public class UpdateSKUsProcessor implements Processor {
     private final String ATTRIBUTES = "show=sku,itemUpdateDate";
     private static final Logger log = Logger.getLogger(UpdateSKUsProcessor.class);
 
+    private final int pageSize;
+
+    public UpdateSKUsProcessor(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
     @Override
     public void process(FeedStatus feedStatus) throws Exception {
 
@@ -36,7 +41,7 @@ public class UpdateSKUsProcessor implements Processor {
         String priceUpdateDate = convertDateToStringFormat(lastRunTimeForDataFeed, DATETIME_FORMAT);
         String itemDeltaURL = "http://api.remix.bestbuy.com/v1/products(itemUpdateDate>" + priceUpdateDate
                 + "&type%20in(" + ITEM_TYPES + ")&" + PRODUCT_ATTR_FILTERS + ")?" + JSON_FORMAT + "&pageSize="
-                + PAGE_SIZE + '&' + ATTRIBUTES + '&' + API_KEY + "&page=";
+                + pageSize + '&' + ATTRIBUTES + '&' + API_KEY + "&page=";
         JSONObject jsonObject = getJSONResponse(itemDeltaURL + currentPageNum);
 
         Long totalProducts = (Long) jsonObject.get("total");
@@ -46,7 +51,7 @@ public class UpdateSKUsProcessor implements Processor {
             Long totalPages = (Long) jsonObject.get("totalPages");
             log.info(String
                     .format("Checking %s total products that have been updated since %s.  Processing %s total pages with a page size of %s",
-                            totalProducts, priceUpdateDate, totalPages, PAGE_SIZE));
+                            totalProducts, priceUpdateDate, totalPages, pageSize));
 
             for (int i = 0; i < totalPages; i++) {
                 if (i != 0) {
