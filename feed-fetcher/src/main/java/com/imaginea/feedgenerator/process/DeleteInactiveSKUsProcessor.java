@@ -4,7 +4,7 @@ import static com.imaginea.feedgenerator.FeedGeneratorConstansts.API_KEY;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DATETIME_FORMAT;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.ITEM_TYPES;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.JSON_FORMAT;
-import static com.imaginea.feedgenerator.util.Utils.convertDateToStringFormat;
+import static com.imaginea.feedgenerator.util.RestApiUtils.convertDateToStringFormat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.json.simple.parser.ParseException;
 
 import com.imaginea.feedgenerator.FeedStatus;
 import com.imaginea.feedgenerator.util.FeedUtils;
-import com.imaginea.feedgenerator.util.Utils;
+import com.imaginea.feedgenerator.util.RestApiUtils;
 
 public class DeleteInactiveSKUsProcessor extends AbstractFeedProcessor {
     private static final Logger log = Logger.getLogger(DownloadSKUDataFilesProcessor.class);
@@ -30,7 +30,7 @@ public class DeleteInactiveSKUsProcessor extends AbstractFeedProcessor {
     }
 
     public JSONObject getJSONResponse(String url) throws ParseException {
-        return Utils.getJSONResponse(url);
+        return RestApiUtils.getJSONResponse(url);
     }
 
     public void process(FeedStatus feedStatus) throws Exception {

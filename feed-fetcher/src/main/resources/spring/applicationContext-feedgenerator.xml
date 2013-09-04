@@ -47,10 +47,12 @@
 				<bean class="com.imaginea.feedgenerator.process.UpdateSKUsProcessor" parent="abstractFeedProcessor"/>
 				<bean class="com.imaginea.feedgenerator.process.DownloadSKUDataFilesProcessor" parent="abstractFeedProcessor"/>
 				<bean class="com.imaginea.feedgenerator.process.DeleteInactiveSKUsProcessor" parent="abstractFeedProcessor"/>
+				<!--  
 				<bean class="com.imaginea.feedgenerator.process.WriteProductsDataProcessor" parent="abstractFeedProcessor">
 					<constructor-arg ref="jsonParser"/>
 					<constructor-arg ref="decimalFormat"/>
 				</bean>
+				-->
 				<bean class="com.imaginea.feedgenerator.process.UpdateCurrentFeedGenerationDataProcessor" parent="abstractFeedProcessor"/>
 			</util:list>
 		</constructor-arg>

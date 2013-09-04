@@ -2,7 +2,7 @@ package com.imaginea.feedgenerator.process;
 
 import static au.com.bytecode.opencsv.CSVWriter.NO_ESCAPE_CHARACTER;
 import static au.com.bytecode.opencsv.CSVWriter.NO_QUOTE_CHARACTER;
-import static com.imaginea.feedgenerator.util.Utils.delete;
+import static com.imaginea.feedgenerator.util.RestApiUtils.delete;
 
 import java.io.File;
 import java.io.FileOutputStream;

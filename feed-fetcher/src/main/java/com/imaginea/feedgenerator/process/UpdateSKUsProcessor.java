@@ -5,8 +5,8 @@ import static com.imaginea.feedgenerator.FeedGeneratorConstansts.DATETIME_FORMAT
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.ITEM_TYPES;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.JSON_FORMAT;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.PRODUCT_ATTR_FILTERS;
-import static com.imaginea.feedgenerator.util.Utils.convertDateToStringFormat;
-import static com.imaginea.feedgenerator.util.Utils.convertStringToDateFormat;
+import static com.imaginea.feedgenerator.util.RestApiUtils.convertDateToStringFormat;
+import static com.imaginea.feedgenerator.util.RestApiUtils.convertStringToDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +20,7 @@ import org.json.simple.parser.ParseException;
 
 import com.imaginea.feedgenerator.FeedStatus;
 import com.imaginea.feedgenerator.util.FeedUtils;
-import com.imaginea.feedgenerator.util.Utils;
+import com.imaginea.feedgenerator.util.RestApiUtils;
 
 public class UpdateSKUsProcessor extends AbstractFeedProcessor {
     private final String ATTRIBUTES = "show=sku,itemUpdateDate";
@@ -73,13 +73,12 @@ public class UpdateSKUsProcessor extends AbstractFeedProcessor {
             feedStatus.setSkusToUpdate(skusToUpdate);
             log.info(String.format("%s of %s products have changed since we last updated them", skusToUpdate.size(),
                     totalProducts));
-            log.info(String.format("All %s products are up to date", totalProducts));
         }
 
     }
 
     public JSONObject getJSONResponse(String url) throws ParseException {
-        return Utils.getJSONResponse(url);
+        return RestApiUtils.getJSONResponse(url);
     }
 
 }

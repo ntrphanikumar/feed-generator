@@ -20,7 +20,7 @@ import org.json.simple.parser.ParseException;
 
 import com.imaginea.feedgenerator.FeedStatus;
 import com.imaginea.feedgenerator.util.FeedUtils;
-import com.imaginea.feedgenerator.util.Utils;
+import com.imaginea.feedgenerator.util.RestApiUtils;
 
 public class DownloadSKUDataFilesProcessor extends AbstractFeedProcessor {
     private static final Logger log = Logger.getLogger(DownloadSKUDataFilesProcessor.class);
@@ -65,7 +65,7 @@ public class DownloadSKUDataFilesProcessor extends AbstractFeedProcessor {
     }
 
     public JSONObject getJSONResponse(String url) throws ParseException {
-        return Utils.getJSONResponse(url);
+        return RestApiUtils.getJSONResponse(url);
     }
 
     private void writeProductToFile(JSONObject product) throws IOException {
