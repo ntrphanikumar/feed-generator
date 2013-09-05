@@ -7,4 +7,10 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>mongo-feeder</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>com.imaginea.feeder</groupId>
+			<artifactId>feed-fetcher</artifactId>
+		</dependency>
+	</dependencies>
 </project>
