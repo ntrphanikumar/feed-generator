@@ -5,14 +5,10 @@ import static com.imaginea.feedgenerator.FeedGeneratorConstansts.ITEM_TYPES;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.JSON_FORMAT;
 import static com.imaginea.feedgenerator.FeedGeneratorConstansts.PRODUCT_ATTR_FILTERS;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

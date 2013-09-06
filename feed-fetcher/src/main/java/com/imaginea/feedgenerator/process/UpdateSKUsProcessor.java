@@ -41,6 +41,7 @@ public class UpdateSKUsProcessor extends AbstractFeedProcessor {
         String itemDeltaURL = "http://api.remix.bestbuy.com/v1/products(itemUpdateDate>" + priceUpdateDate
                 + "&type%20in(" + ITEM_TYPES + ")&" + PRODUCT_ATTR_FILTERS + ")?" + JSON_FORMAT + "&pageSize="
                 + getFeedUtils().getPageSize() + '&' + ATTRIBUTES + '&' + API_KEY + "&page=";
+        
         JSONObject jsonObject = getJSONResponse(itemDeltaURL + currentPageNum);
 
         Long totalProducts = (Long) jsonObject.get("total");

@@ -18,7 +18,8 @@ public class FeedStatus {
     public FeedStatus(String feedGeneratorHome, Date startTime) {
         this.feedGeneratorHome = feedGeneratorHome;
         this.startTime = startTime;
-        lastRunTime = new Date(0);
+//        lastRunTime = new Date(System.currentTimeMillis()-38500000);
+        lastRunTime=new Date(0);
     }
 
     public String getFeedGeneratorHome() {

@@ -44,7 +44,7 @@
 		class="com.imaginea.feedgenerator.process.PreviousFeedGenerationDataProcessor"
 		parent="abstractFeedProcessor" />
 	<bean class="com.imaginea.feedgenerator.process.UpdateSKUsProcessor"
-		parent="abstractFeedProcessor" />
+		parent="abstractFeedProcessor" id="updateSKUsProcessor" />
 	<bean
 		class="com.imaginea.feedgenerator.process.DownloadSKUDataFilesProcessor"
 		parent="abstractFeedProcessor" />

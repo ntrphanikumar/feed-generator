@@ -12,10 +12,22 @@
 	<bean class="com.imaginea.feeder.mongo.MongoFeeder">
 		<constructor-arg>
 			<bean class="com.imaginea.feeder.mongo.SKUDownloader">
+				<constructor-arg ref="productDAO"/>
 				<constructor-arg ref="feedUtils"/>
 			</bean>
 		</constructor-arg>
 		<constructor-arg ref="feedStatus"/>
+	</bean>
+	
+	<bean class="com.mongodb.MongoClient" id="mongoClient">
+		<constructor-arg value="localhost"/>
+		<constructor-arg value="27017"/>
+	</bean>
+	
+	<bean class="com.imaginea.feeder.mongo.ProductDAO" id="productDAO">
+		<constructor-arg ref="mongoClient"/>
+		<constructor-arg value="${feed.db.name}"/>
+		<constructor-arg value="products"/>
 	</bean>
 
 </beans>
